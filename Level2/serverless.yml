@@ -1,0 +1,93 @@
+# NOTE: update this with your service name
+service: Level2
+
+# Create an optimized package for our functions
+package:
+  individually: true
+
+plugins:
+  - serverless-bundle # Package our functions with Webpack
+  - serverless-offline
+  - serverless-dotenv-plugin # Load .env as environment variables
+  - serverless-domain-manager
+  #- serverless-iam-roles-per-function
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: eu-west-1
+  profile: default
+  stage: ${env:stage}
+  tracing: true
+  logs:
+    restApi: true
+
+  # 'iamRoleStatements' defines the permission policy for the Lambda function.
+  # In this case Lambda functions are granted with permissions to access DynamoDB.
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:eu-west-1:*:*"
+
+custom:
+  #dotenv:
+  #  path: .env-dev
+  customDomain:
+    domainName: ${env:domainName}
+    stage: ${self:provider.stage}
+    basePath: ""
+    createRoute53Record: true
+    certificateArn: arn:aws:acm:us-east-1:093531186768:certificate/1465bbe7-2984-47ee-88be-f5ff40dd4264
+    hostedZoneId: Z17FJAILIO1615
+    hostedZonePrivate: false
+
+functions:
+  hello:
+    handler: handler.hello
+    #role: AllLambdaFunctionsRole
+    events:
+      - http:
+          path: hello
+          method: get
+  #Add the following to the serverless.yml file under functions
+  create:
+    handler: create.main
+    #role: AllLambdaFunctionsRole
+    events:
+      - http:
+          path: demo
+          method: post
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CognitoUserPoolAuthorizer
+# Create our resources with separate CloudFormation templates
+resources:
+  # All IAM Roles
+  - ${file(resources/iam-roles.yml)}
+  # Cognito
+  - ${file(resources/cognito-user-pool.yml)}
+  - ${file(resources/cognito-identity-pool.yml)}
+  # API Gateway Errors
+  - ${file(resources/api-gateway-errors.yml)}
+  # API Gateway Authorizer
+  - ${file(resources/api-gateway-authorizer.yml)}
+  # DynamoDB
+  - ${file(resources/dynamodb-table.yml)}
