@@ -1,7 +1,7 @@
 {
   "name": "Level1",
   "version": "1.1.0",
-  "description": "A Node.js starter for the Serverless Framework with async/await and unit test support",
+  "description": "Level 1 IaC Demo",
   "main": "handler.js",
   "scripts": {
     "test": "serverless-bundle test"
@@ -10,7 +10,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AnomalyInnovations/serverless-nodejs-starter.git"
+    "url": "https://github.com/testofwill22/iactutorial.git"
   },
   "devDependencies": {
     "aws-sdk": "^2.631.0",

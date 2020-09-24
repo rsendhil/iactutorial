@@ -9,7 +9,7 @@ plugins:
   - serverless-bundle # Package our functions with Webpack
   - serverless-offline
   - serverless-dotenv-plugin # Load .env as environment variables
-  - serverless-domain-manager
+  #- serverless-domain-manager
   #- serverless-iam-roles-per-function
 
 provider:
@@ -21,7 +21,11 @@ provider:
   tracing: true
   logs:
     restApi: true
-
+  deploymentBucket:
+    name: level2-deployments.srivittal.com
+    serverSideEncryption: AES256
+  environment:
+    region: ${self:provider.region}
   # 'iamRoleStatements' defines the permission policy for the Lambda function.
   # In this case Lambda functions are granted with permissions to access DynamoDB.
   iamRoleStatements:
@@ -36,17 +40,17 @@ provider:
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:eu-west-1:*:*"
 
-custom:
+#custom:
   #dotenv:
   #  path: .env-dev
-  customDomain:
-    domainName: ${env:domainName}
-    stage: ${self:provider.stage}
-    basePath: ""
-    createRoute53Record: true
-    certificateArn: arn:aws:acm:us-east-1:093531186768:certificate/1465bbe7-2984-47ee-88be-f5ff40dd4264
-    hostedZoneId: Z17FJAILIO1615
-    hostedZonePrivate: false
+  #customDomain:
+  #  domainName: ${env:domainName}
+  #  stage: ${self:provider.stage}
+  #  basePath: ""
+  #  createRoute53Record: true
+  #  certificateArn: arn:aws:acm:us-east-1:093531186768:certificate/1465bbe7-2984-47ee-88be-f5ff40dd4264
+  #  hostedZoneId: Z17FJAILIO1615
+  #  hostedZonePrivate: false
 
 functions:
   hello:

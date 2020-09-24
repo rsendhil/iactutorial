@@ -19,7 +19,11 @@ provider:
   tracing: true
   logs:
     restApi: true
-
+  deploymentBucket:
+    name: level1-deployments.srivittal.com
+    serverSideEncryption: AES256
+  environment:
+    region: ${self:provider.region}
   # 'iamRoleStatements' defines the permission policy for the Lambda function.
   # In this case Lambda functions are granted with permissions to access DynamoDB.
   iamRoleStatements:

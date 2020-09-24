@@ -16,8 +16,9 @@ Resources:
       AutoVerifiedAttributes:
         - email
       EmailConfiguration:
-        EmailSendingAccount: COGNITO_DEFAULT
-        SourceArn: arn:aws:ses:eu-west-1:093531186768:identity/rsendhil@srivittal.com
+        EmailSendingAccount: DEVELOPER
+        ReplyToEmailAddress: rsendhil@srivittal.com # email address
+        SourceArn: arn:aws:ses:eu-west-1:801480067342:identity/rsendhil@srivittal.com
       EmailVerificationMessage: "Your verification code is <h1>{####}</h1>. "
       EmailVerificationSubject: Your verification code
       LambdaConfig: {}
